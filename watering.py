@@ -1,4 +1,5 @@
 #this is updated
+import machine
 import network
 import urequests
 import time
@@ -9,7 +10,6 @@ import os
 from CONFIG import SSID, PASSWORD,things_speak_api_key
 
 os.chdir("/")
-
 
 
 #ThingSpeak Initialization
@@ -97,59 +97,60 @@ def water_plants(pump, duration):
     try:
         print(pump)
     except Exception as e:
-        print('Error occurred while connecting to WiFi:', str(e))
+        print('Error occurred while water_plants:', str(e))
     thingSpeak(3, str(pump))
     sleep(duration)
     pump.off()
     thingSpeak(3, 0)
         
 
-# Main Program
+def main():# Main Program
 
-pumps = [pumpA, pumpB, pumpC, pumpD]
+    pumps = [pumpA, pumpB, pumpC, pumpD]
 
-# Turn off pumps - precaution
-for pump in pumps:
-    pump.off()
-    
-signal_led.on()
-ip = connect_WiFi()  # Connect to Network
-
-
-try:
-    ntptime.settime()  # Update time from NTP server
-except Exception as e:
-    print('Error occurred while updating time:', str(e))
-    log("E1 TUE") # Time Update Error
-    machine.reset()
-
-
-signal_led.off()
-
-print(ntptime.time())
-
-
-last_watering_time = int(param(0))
-temperature_pico = read_temperature()
-thingSpeak(1, temperature_pico)
-sleep(15)
-thingSpeak(2, (last_watering_time + watering_period - ntptime.time()))
-sleep(15)
-
-if (last_watering_time + watering_period) - ntptime.time() <= 0:
-    water_plants(pumpA,20)
-    sleep(60)
-    water_plants(pumpB,20)
-    sleep(60)
-    water_plants(pumpC,30)
-    sleep(60)
-    water_plants(pumpD,30)
-    sleep(60)          
+    # Turn off pumps - precaution
+    for pump in pumps:
+        pump.off()
         
-except Exception as e:
-    print('Error occurred in main program loop:', str(e))
-    log("E2 MPE") #main Program Error
-    machine.reset()
+    signal_led.on()
+
+
+    try:
+        ntptime.settime()  # Update time from NTP server
+    except Exception as e:
+        print('Error occurred while updating time:', str(e))
+        log("E1 TUE") # Time Update Error
+        machine.reset()
+
+
+    log("E0")  # log reset
+
+    signal_led.off()
+
+    print(ntptime.time())
+
+    try:
+        last_watering_time = int(param(0))
+        temperature_pico = read_temperature()
+        thingSpeak(1, temperature_pico)
+        sleep(15)
+        thingSpeak(2, (last_watering_time + watering_period - ntptime.time()))
+        sleep(15)
+
+        if (last_watering_time + watering_period) - ntptime.time() <= 0:
+            water_plants(pumpA,20)
+            sleep(60)
+            water_plants(pumpB,20)
+            sleep(60)
+            water_plants(pumpC,30)
+            sleep(60)
+            water_plants(pumpD,30)
+            sleep(60)          
+        
+    except Exception as e:
+        print('Error occurred in main program loop:', str(e))
+        log("E2 MPE") #main Program Error
+        machine.reset() cant run
 
 
 

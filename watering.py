@@ -10,9 +10,7 @@ from CONFIG import SSID, PASSWORD,things_speak_api_key
 
 os.chdir("/")
 
-#Network Initialization
-ssid = SSID
-password = PASSWORD
+
 
 #ThingSpeak Initialization
 server = "http://api.thingspeak.com/"
@@ -72,32 +70,6 @@ def param(update):
         machine.reset()
 
 
-def connect_WiFi():
-    MAX_ATTEMPTS = 50  # Maximum number of connection attempts
-    attempt = 0
-
-    while attempt < MAX_ATTEMPTS:
-        try:
-            wlan = network.WLAN(network.STA_IF)
-            wlan.active(True)
-            wlan.connect(ssid, password)
-            while not wlan.isconnected():
-                print('Waiting for connection...')
-                sleep(10)
-                attempt += 1
-                if attempt >= MAX_ATTEMPTS:
-                    print('Unable to establish a connection. Resetting...')
-                    machine.reset()
-            ip = wlan.ifconfig()[0]
-            print(f'Connected on {ip}')
-            return ip
-        except Exception as e:
-            print('Error occurred while connecting to WiFi:', str(e))
-            log(f"E2 WCE") #WiFi Connection Error
-            machine.reset()
-
-
-
 def read_temperature():
     adc_value = temperature_internal.read_u16()
     volt = (3.3/65535)*adc_value
@@ -152,35 +124,33 @@ except Exception as e:
     machine.reset()
 
 
-log("E0")  # log reset
-
 signal_led.off()
 
 print(ntptime.time())
 
-if True:#it suppoed to be a loop
-    try:
-        last_watering_time = int(param(0))
-        temperature_pico = read_temperature()
-        thingSpeak(1, temperature_pico)
-        sleep(15)
-        thingSpeak(2, (last_watering_time + watering_period - ntptime.time()))
-        sleep(15)
 
-        if (last_watering_time + watering_period) - ntptime.time() <= 0:
-            water_plants(pumpA,20)
-            sleep(60)
-            water_plants(pumpB,20)
-            sleep(60)
-            water_plants(pumpC,30)
-            sleep(60)
-            water_plants(pumpD,30)
-            sleep(60)          
+last_watering_time = int(param(0))
+temperature_pico = read_temperature()
+thingSpeak(1, temperature_pico)
+sleep(15)
+thingSpeak(2, (last_watering_time + watering_period - ntptime.time()))
+sleep(15)
+
+if (last_watering_time + watering_period) - ntptime.time() <= 0:
+    water_plants(pumpA,20)
+    sleep(60)
+    water_plants(pumpB,20)
+    sleep(60)
+    water_plants(pumpC,30)
+    sleep(60)
+    water_plants(pumpD,30)
+    sleep(60)          
         
-    except Exception as e:
-        print('Error occurred in main program loop:', str(e))
-        log("E2 MPE") #main Program Error
-        machine.reset()
+except Exception as e:
+    print('Error occurred in main program loop:', str(e))
+    log("E2 MPE") #main Program Error
+    machine.reset()
+
 
 
 

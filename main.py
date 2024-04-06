@@ -176,9 +176,9 @@ while True:
         sleep(15)
 
         if (last_watering_time + watering_period) - ntptime.time() <= 0:
-            water_plants(pumpA,20)
+            water_plants(pumpA,50)
             sleep(60)
-            water_plants(pumpB,30)
+            water_plants(pumpB,50)
             sleep(60)
             water_plants(pumpC,30)
             sleep(60)

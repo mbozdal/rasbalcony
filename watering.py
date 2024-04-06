@@ -1,4 +1,3 @@
-#this is updated
 import machine
 import network
 import urequests

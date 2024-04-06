@@ -150,7 +150,7 @@ def main():# Main Program
     except Exception as e:
         print('Error occurred in main program loop:', str(e))
         log("E2 MPE") #main Program Error
-        machine.reset() cant run
+        machine.reset()
 
 
 

@@ -26,7 +26,6 @@ temperature_internal = machine.ADC(adcpin)
 
 #GPIOs
 signal_led = Pin(0, Pin.OUT) #signal LED
-
 pumpA = Pin(18, Pin.OUT)
 pumpB = Pin(19, Pin.OUT)
 pumpC = Pin(20, Pin.OUT)
@@ -36,7 +35,7 @@ pumpD = Pin(21, Pin.OUT)
 
 #initial parameters
 last_watering_time = 0
-watering_period = 12*60*60
+watering_period = 12*60*60 #hours * min * seconds
 
 pumps = [pumpA, pumpB, pumpC, pumpD]
 
@@ -112,29 +111,6 @@ def water_plants(pump, duration):
         
 
 def main():# Main Program
-    signal_led.off()
-    sleep(1)
-    signal_led.on()
-    sleep(1)
-    signal_led.off()
-    sleep(1)
-    signal_led.on()
-    sleep(1)
-    signal_led.off()
-    sleep(1)
-    signal_led.on()
-    sleep(1)
-    signal_led.off()
-    sleep(1)
-    signal_led.on()
-    sleep(1)
-    signal_led.off()
-    sleep(1)
-    signal_led.on()
-    sleep(1)
-    signal_led.off()
-    sleep(1)
-    signal_led.on()
     try:
         ntptime.settime()  # Update time from NTP server
     except Exception as e:
@@ -168,5 +144,3 @@ def main():# Main Program
         print('Error occurred in main program loop:', str(e))
         log("E2 MPE") #main Program Error
         machine.reset()
-
-

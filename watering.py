@@ -123,6 +123,18 @@ def main():# Main Program
     signal_led.off()
     sleep(1)
     signal_led.on()
+    sleep(1)
+    signal_led.off()
+    sleep(1)
+    signal_led.on()
+    sleep(1)
+    signal_led.off()
+    sleep(1)
+    signal_led.on()
+    sleep(1)
+    signal_led.off()
+    sleep(1)
+    signal_led.on()
     try:
         ntptime.settime()  # Update time from NTP server
     except Exception as e:

@@ -1,4 +1,3 @@
-#done
 import machine
 import network
 import urequests
@@ -9,7 +8,42 @@ import ntptime
 import os
 from CONFIG import SSID, PASSWORD,things_speak_api_key
 
+os.chdir("/")
 
+
+#ThingSpeak Initialization
+server = "http://api.thingspeak.com/"
+apikey = things_speak_api_key
+field = 1
+
+global last_watering_time
+
+##pin assignments##
+#internal temperature
+adcpin = 4
+temperature_internal = machine.ADC(adcpin)
+
+#GPIOs
+signal_led = Pin(0, Pin.OUT) #signal LED
+
+pumpA = Pin(18, Pin.OUT)
+pumpB = Pin(19, Pin.OUT)
+pumpC = Pin(20, Pin.OUT)
+pumpD = Pin(21, Pin.OUT)
+
+
+
+#initial parameters
+last_watering_time = 0
+watering_period = 12*60*60
+
+pumps = [pumpA, pumpB, pumpC, pumpD]
+
+# Turn off pumps - precaution
+for pump in pumps:
+    pump.off()
+    
+signal_led.on()
 
 def log(data):
     try:
@@ -77,43 +111,6 @@ def water_plants(pump, duration):
         
 
 def main():# Main Program
-    os.chdir("/")
-
-
-    #ThingSpeak Initialization
-    server = "http://api.thingspeak.com/"
-    apikey = things_speak_api_key
-    field = 1
-
-    global last_watering_time
-
-    ##pin assignments##
-    #internal temperature
-    adcpin = 4
-    temperature_internal = machine.ADC(adcpin)
-
-    #GPIOs
-    signal_led = Pin(0, Pin.OUT) #signal LED
-
-    pumpA = Pin(18, Pin.OUT)
-    pumpB = Pin(19, Pin.OUT)
-    pumpC = Pin(20, Pin.OUT)
-    pumpD = Pin(21, Pin.OUT)
-
-
-
-    #initial parameters
-    last_watering_time = 0
-    watering_period = 12*60*60
-
-    pumps = [pumpA, pumpB, pumpC, pumpD]
-
-    # Turn off pumps - precaution
-    for pump in pumps:
-        pump.off()
-        
-    signal_led.on()
-
 
     try:
         ntptime.settime()  # Update time from NTP server
@@ -121,9 +118,6 @@ def main():# Main Program
         print('Error occurred while updating time:', str(e))
         log("E1 TUE") # Time Update Error
         machine.reset()
-
-
-    log("E0")  # log reset
 
     signal_led.off()
 
@@ -136,12 +130,11 @@ def main():# Main Program
         sleep(15)
         thingSpeak(2, (last_watering_time + watering_period - ntptime.time()))
         sleep(15)
-        print("hola")
 
         if (last_watering_time + watering_period) - ntptime.time() <= 0:
-            water_plants(pumpA,20)
+            water_plants(pumpA,30)
             sleep(60)
-            water_plants(pumpB,20)
+            water_plants(pumpB,30)
             sleep(60)
             water_plants(pumpC,30)
             sleep(60)
@@ -152,4 +145,5 @@ def main():# Main Program
         print('Error occurred in main program loop:', str(e))
         log("E2 MPE") #main Program Error
         machine.reset()
+
 

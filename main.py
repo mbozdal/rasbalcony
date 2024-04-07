@@ -59,9 +59,9 @@ def connect_WiFi():
 
 
 # Main Program
+log("E0")  # log reset
 
 ip = connect_WiFi()  # Connect to Network
-
 
 try:
     ntptime.settime()  # Update time from NTP server
@@ -70,36 +70,16 @@ except Exception as e:
     log("E1 TUE") # Time Update Error
     machine.reset()
 
-log("E0")  # log reset
-
-
-# Function to execute watering logic - redundant
-def execute_watering_logic():
-    try:
-        import watering  # Import watering logic from watering.py
-        watering.water_plants()  # Call watering function from watering.py
-    except Exception as e:
-        print('Error occurred while executing watering logic:', str(e))
-        machine.reset()
-
-
-
 
 signal_led = Pin(0, Pin.OUT) #signal LED
 # Main program loop
 while True:
     try:
-        signal_led.on()
-        print(1)
         ota_updater = OTAUpdater(SSID, PASSWORD, firmware_url, "watering.py")
         ota_updater.download_and_install_update_if_available_noRESET()
-        print(2)
-        time.sleep(5)  # led check
-        
-        
+
         # After OTA update, execute the updated script
-        try:    # Reload the module to apply changes
-                # Remove the module from the module cache
+        try:    # Remove the module from the module cache
             if 'watering' in sys.modules:
                 del sys.modules['watering']
         
@@ -108,19 +88,11 @@ while True:
 
             # Call the main function or logic from the updated module
             watering.main()
-            
-            
             print("Watering logic executed successfully.")
         except Exception as e:
             print('Error occurred while executing watering logic:', str(e))
-        
-        
-        
-        
-        print(3)
-        time.sleep(1)  # led check
-        signal_led.off()
-        time.sleep(10)  # Wait for 5 minutes before checking again
+
+        time.sleep(300)  # Wait for 5 minutes before checking again
     except Exception as e:
         print('Error occurred in main OTA program loop:', str(e))
         machine.reset()

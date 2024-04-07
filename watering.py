@@ -1,4 +1,5 @@
 #done
+import machine
 import network
 import urequests
 import time

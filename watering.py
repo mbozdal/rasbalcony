@@ -1,5 +1,4 @@
 #done
-import machine
 import network
 import urequests
 import time
@@ -9,34 +8,6 @@ import ntptime
 import os
 from CONFIG import SSID, PASSWORD,things_speak_api_key
 
-os.chdir("/")
-
-
-#ThingSpeak Initialization
-server = "http://api.thingspeak.com/"
-apikey = things_speak_api_key
-field = 1
-
-global last_watering_time
-
-##pin assignments##
-#internal temperature
-adcpin = 4
-temperature_internal = machine.ADC(adcpin)
-
-#GPIOs
-signal_led = Pin(0, Pin.OUT) #signal LED
-
-pumpA = Pin(18, Pin.OUT)
-pumpB = Pin(19, Pin.OUT)
-pumpC = Pin(20, Pin.OUT)
-pumpD = Pin(21, Pin.OUT)
-
-
-
-#initial parameters
-last_watering_time = 0
-watering_period = 12*60*60
 
 
 def log(data):
@@ -105,6 +76,34 @@ def water_plants(pump, duration):
         
 
 def main():# Main Program
+    os.chdir("/")
+
+
+    #ThingSpeak Initialization
+    server = "http://api.thingspeak.com/"
+    apikey = things_speak_api_key
+    field = 1
+
+    global last_watering_time
+
+    ##pin assignments##
+    #internal temperature
+    adcpin = 4
+    temperature_internal = machine.ADC(adcpin)
+
+    #GPIOs
+    signal_led = Pin(0, Pin.OUT) #signal LED
+
+    pumpA = Pin(18, Pin.OUT)
+    pumpB = Pin(19, Pin.OUT)
+    pumpC = Pin(20, Pin.OUT)
+    pumpD = Pin(21, Pin.OUT)
+
+
+
+    #initial parameters
+    last_watering_time = 0
+    watering_period = 12*60*60
 
     pumps = [pumpA, pumpB, pumpC, pumpD]
 
@@ -151,3 +150,4 @@ def main():# Main Program
         print('Error occurred in main program loop:', str(e))
         log("E2 MPE") #main Program Error
         machine.reset()
+

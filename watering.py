@@ -1,4 +1,4 @@
-#this is test
+import sys
 import machine
 import network
 import urequests

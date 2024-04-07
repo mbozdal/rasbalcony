@@ -135,6 +135,7 @@ def main():# Main Program
         sleep(15)
         thingSpeak(2, (last_watering_time + watering_period - ntptime.time()))
         sleep(15)
+        print("hola")
 
         if (last_watering_time + watering_period) - ntptime.time() <= 0:
             water_plants(pumpA,20)

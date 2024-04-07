@@ -1,3 +1,4 @@
+#this is updated
 import machine
 import network
 import urequests
@@ -150,7 +151,3 @@ def main():# Main Program
         print('Error occurred in main program loop:', str(e))
         log("E2 MPE") #main Program Error
         machine.reset()
-
-
-
-

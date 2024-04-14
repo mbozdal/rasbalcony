@@ -35,7 +35,7 @@ pumpD = Pin(21, Pin.OUT)
 
 #initial parameters
 last_watering_time = 0
-watering_period = 12*60*60 #hours * min * seconds
+watering_period = 24*60*60 #hours * min * seconds
 
 pumps = [pumpA, pumpB, pumpC, pumpD]
 

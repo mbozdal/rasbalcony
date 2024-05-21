@@ -17,6 +17,8 @@ server = "http://api.thingspeak.com/"
 apikey = things_speak_api_key
 field = 1
 
+
+
 global last_watering_time
 
 ##pin assignments##
@@ -35,7 +37,9 @@ pumpD = Pin(21, Pin.OUT)
 
 #initial parameters
 last_watering_time = 0
-watering_period = 48*60*60 #hours * min * seconds
+watering_period = 24*60*60 #hours * min * seconds
+water_time = 60 #active time of pump in seconds
+rest_time = 60 #rest time between pumps
 
 pumps = [pumpA, pumpB, pumpC, pumpD]
 
@@ -131,14 +135,14 @@ def main():# Main Program
         sleep(15)
 
         if (last_watering_time + watering_period) - ntptime.time() <= 0:
-            water_plants(pumpA,30)
-            sleep(60)
-            water_plants(pumpB,30)
-            sleep(60)
-            water_plants(pumpC,30)
-            sleep(60)
-            water_plants(pumpD,30)
-            sleep(60)          
+            water_plants(pumpA,water_time)
+            sleep(rest_time)
+            water_plants(pumpB,water_time)
+            sleep(rest_time)
+            water_plants(pumpC,water_time)
+            sleep(rest_time)
+            water_plants(pumpD,water_time)
+            sleep(rest_time)          
         
     except Exception as e:
         print('Error occurred in main program loop:', str(e))
